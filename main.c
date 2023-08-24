@@ -1,33 +1,33 @@
 /**
   ******************************************************************************
   * @file    main.c
-  * @author  ¹ùÉÆÆì
+  * @author  éƒ­å–„æ—— Shanqi Guo
   * @version V1.0
   * @date    2022-4-22
-  * @brief   ·É¿ØÏµÍ³¿ª·¢
+  * @brief   é£æ§ç³»ç»Ÿå¼€å‘
   ******************************************************************************
-  * Ó²¼şÆ½Ì¨	 :STM32F103RCT6ÏµÍ³°å+MPU6050Ä£¿é+Á½Â·PWM²¨+³¬Éù²¨²â¾à+PIDÖ÷¿Ø
+  * ç¡¬ä»¶å¹³å°	 :STM32F103RCT6ç³»ç»Ÿæ¿+MPU6050æ¨¡å—+ä¸¤è·¯PWMæ³¢+è¶…å£°æ³¢æµ‹è·+PIDä¸»æ§
   ******************************************************************************
   */ 
-#include "main.h"//Ö÷º¯ÊıÍ·ÎÄ¼ş
+#include "main.h"//ä¸»å‡½æ•°å¤´æ–‡ä»¶
 
 /**
-  * @brief  Ö÷º¯Êı
-  * @param  ÎŞ
-  * @retval ÎŞ
+  * @brief  ä¸»å‡½æ•°
+  * @param  æ— 
+  * @retval æ— 
   */
 int main(void) 
 {	
-	SYS_Init();//ÏµÍ³³õÊ¼»¯×Üº¯Êı
+	SYS_Init();//ç³»ç»Ÿåˆå§‹åŒ–æ€»å‡½æ•°
 	set_motor1_dutyfactor(ChannelPulse1);
 	set_motor2_dutyfactor(ChannelPulse2);
-	while(1)   //Ö÷Ñ­»·
+	while(1)   //ä¸»å¾ªç¯
 	{
-		MPU_Read();    //MPU6050Êı¾İ¶ÁÈ¡
-		DATA_Report();		//MPU6050Êı¾İÉÏ±¨
+		MPU_Read();    //MPU6050æ•°æ®è¯»å–
+		DATA_Report();		//MPU6050æ•°æ®ä¸ŠæŠ¥
 		deal_serial_data();		
 		//Controler();
-		/* ´¦ÀíÊı¾İ */
+		/* å¤„ç†æ•°æ® */
     if (Key_Scan(KEY1_GPIO_PORT, KEY1_GPIO_PIN) == KEY_ON)
     {
       ChannelPulse1 += 10;    
@@ -60,32 +60,32 @@ int main(void)
 
 
 /**
-  * @brief  ÏµÍ³³õÊ¼»¯×Üº¯Êı
-  * @param  ÎŞ
-  * @retval ÎŞ
+  * @brief  ç³»ç»Ÿåˆå§‹åŒ–æ€»å‡½æ•°
+  * @param  æ— 
+  * @retval æ— 
   */
 void SYS_Init(void)
 {
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  //ÖĞ¶ÏÓÅÏÈ¼¶·Ö×éº¯Êı
-	delay_init();	    							 //ÑÓÊ±º¯Êı³õÊ¼»¯	  
-	uart_init(115200);	 	                         //´®¿Ú³õÊ¼»¯Îª115200
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  //ä¸­æ–­ä¼˜å…ˆçº§åˆ†ç»„å‡½æ•°
+	delay_init();	    							 //å»¶æ—¶å‡½æ•°åˆå§‹åŒ–	  
+	uart_init(115200);	 	                         //ä¸²å£åˆå§‹åŒ–ä¸º115200
     uart3_init(115200);
-	LED_Init();		                               	 //³õÊ¼»¯ÓëLEDÁ¬½ÓµÄÓ²¼ş½Ó¿Ú
-	//BASIC_TIM_Init();                            //³õÊ¼»¯»ù±¾¶¨Ê±Æ÷
-	MPU_Init();	                                   //³õÊ¼»¯MPU6050
-	HCSR04_Init();                                 //³¬Éù²¨²â¾à³õÊ¼»¯
-	Key_GPIO_Config();                             //°´¼ü³õÊ¼»¯
-	Motor_TIM_Init();                              //µç»úPWM³õÊ¼»¯
-	while(mpu_dmp_init())                          //³õÊ¼»¯mpu_dmp¿â
+	LED_Init();		                               	 //åˆå§‹åŒ–ä¸LEDè¿æ¥çš„ç¡¬ä»¶æ¥å£
+	//BASIC_TIM_Init();                            //åˆå§‹åŒ–åŸºæœ¬å®šæ—¶å™¨
+	MPU_Init();	                                   //åˆå§‹åŒ–MPU6050
+	HCSR04_Init();                                 //è¶…å£°æ³¢æµ‹è·åˆå§‹åŒ–
+	Key_GPIO_Config();                             //æŒ‰é”®åˆå§‹åŒ–
+	Motor_TIM_Init();                              //ç”µæœºPWMåˆå§‹åŒ–
+	while(mpu_dmp_init())                          //åˆå§‹åŒ–mpu_dmpåº“
  	{
-		LED2 = !LED2;delay_ms(50);LED2 = !LED2;     //LEDÉÁË¸Ö¸Ê¾
-		printf("Initialization failed£¡\r\n");		//´®¿Ú³õÊ¼»¯Ê§°ÜÉÏ±¨
+		LED2 = !LED2;delay_ms(50);LED2 = !LED2;     //LEDé—ªçƒæŒ‡ç¤º
+		printf("Initialization failedï¼\r\n");		//ä¸²å£åˆå§‹åŒ–å¤±è´¥ä¸ŠæŠ¥
 	}
-	printf("Initialization succeed£¡\r\n");			//´®¿Ú³õÊ¼»¯³É¹¦ÉÏ±¨
-	LED1 = !LED1;delay_ms(50);LED1 = !LED1;		//LEDÉÁË¸Ö¸Ê¾
-	delay_ms(50);									//ÑÓÊ±³õ½çÃæÏÔÊ¾	
-	mpu6050.flag = 0;                               //²É¼¯³É¹¦±êÖ¾Î»³õÊ¼»¯
-	mpu6050.speed = 0;								//ÉÏ±¨ËÙ¶È³õÊ¼»¯
+	printf("Initialization succeedï¼\r\n");			//ä¸²å£åˆå§‹åŒ–æˆåŠŸä¸ŠæŠ¥
+	LED1 = !LED1;delay_ms(50);LED1 = !LED1;		//LEDé—ªçƒæŒ‡ç¤º
+	delay_ms(50);									//å»¶æ—¶åˆç•Œé¢æ˜¾ç¤º	
+	mpu6050.flag = 0;                               //é‡‡é›†æˆåŠŸæ ‡å¿—ä½åˆå§‹åŒ–
+	mpu6050.speed = 0;								//ä¸ŠæŠ¥é€Ÿåº¦åˆå§‹åŒ–
 	MPU_Read();
 	pitch0 = pitch;
 	yaw0 = yaw;
@@ -94,68 +94,68 @@ void SYS_Init(void)
 	Yaw_target = (uint32_t)yaw;
 }
 /**
-  * @brief  MPU6050Êı¾İ¶ÁÈ¡º¯Êı
-  * @param  ÎŞ
-  * @retval ÎŞ
+  * @brief  MPU6050æ•°æ®è¯»å–å‡½æ•°
+  * @param  æ— 
+  * @retval æ— 
   */
 void MPU_Read(void)
 {
 	
-	if(mpu_dmp_get_data(&pitch,&roll,&yaw)==0)//dmp´¦ÀíµÃµ½Êı¾İ£¬¶Ô·µ»ØÖµ½øĞĞÅĞ¶Ï
+	if(mpu_dmp_get_data(&pitch,&roll,&yaw)==0)//dmpå¤„ç†å¾—åˆ°æ•°æ®ï¼Œå¯¹è¿”å›å€¼è¿›è¡Œåˆ¤æ–­
 	{ 
-		temp=MPU_Get_Temperature();	                //µÃµ½ÎÂ¶ÈÖµ
-		MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//µÃµ½¼ÓËÙ¶È´«¸ĞÆ÷Êı¾İ
-		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//µÃµ½ÍÓÂİÒÇÊı¾İ
+		temp=MPU_Get_Temperature();	                //å¾—åˆ°æ¸©åº¦å€¼
+		MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//å¾—åˆ°åŠ é€Ÿåº¦ä¼ æ„Ÿå™¨æ•°æ®
+		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//å¾—åˆ°é™€èºä»ªæ•°æ®
 		Length = Hcsr04GetLength();
-		mpu6050.speed++;                            //ÉÏ±¨ËÙ¶È×Ô¼Ó
-		if(mpu6050.speed == 1)						//ÉÏ±¨ËÙ¶ÈãĞÖµÉèÖÃ
+		mpu6050.speed++;                            //ä¸ŠæŠ¥é€Ÿåº¦è‡ªåŠ 
+		if(mpu6050.speed == 1)						//ä¸ŠæŠ¥é€Ÿåº¦é˜ˆå€¼è®¾ç½®
 		{
-			mpu6050.flag = 1;						//²É¼¯³É¹¦±êÖ¾Î»ÉèÖÃÎªÓĞĞ§
-			mpu6050.speed = 0;						//ÉÏ±¨ËÙ¶È¹éÁã
+			mpu6050.flag = 1;						//é‡‡é›†æˆåŠŸæ ‡å¿—ä½è®¾ç½®ä¸ºæœ‰æ•ˆ
+			mpu6050.speed = 0;						//ä¸ŠæŠ¥é€Ÿåº¦å½’é›¶
 		}	
 	}
-	else 											//²É¼¯²»³É¹¦										
+	else 											//é‡‡é›†ä¸æˆåŠŸ										
 	{
-		mpu6050.flag = 0;							//²É¼¯³É¹¦±êÖ¾Î»ÉèÖÃÎªÎŞĞ§
+		mpu6050.flag = 0;							//é‡‡é›†æˆåŠŸæ ‡å¿—ä½è®¾ç½®ä¸ºæ— æ•ˆ
 	}	
 }
 /**
-  * @brief  MPU6050Êı¾İÉÏ±¨
-  * @param  ÎŞ
-  * @retval ÎŞ
+  * @brief  MPU6050æ•°æ®ä¸ŠæŠ¥
+  * @param  æ— 
+  * @retval æ— 
   */
 void DATA_Report(void)
 {
-	if(mpu6050.flag == 1)						//²É¼¯³É¹¦Ê±
+	if(mpu6050.flag == 1)						//é‡‡é›†æˆåŠŸæ—¶
 	{ 
-		printf("temp:%d.%d,  ",temp/100,temp%10); //Í¨¹ı´®¿Ú1Êä³öÎÂ¶È
+		printf("temp:%d.%d,  ",temp/100,temp%10); //é€šè¿‡ä¸²å£1è¾“å‡ºæ¸©åº¦
 		//pitch
 		pitch1=(pitch-pitch0)*10;							
-		printf("pitch:%d,  ",(int)pitch1/100); //Í¨¹ı´®¿Ú1Êä³öpitch	
+		printf("pitch:%d,  ",(int)pitch1/100); //é€šè¿‡ä¸²å£1è¾“å‡ºpitch	
 		//yaw
-		yaw1=(yaw-yaw0)*10;                           //¸³tempÎªyaw
-		printf("yaw:%d,  ",(int)yaw1/10);//Í¨¹ı´®¿Ú1Êä³öyaw
+		yaw1=(yaw-yaw0)*10;                           //èµ‹tempä¸ºyaw
+		printf("yaw:%d,  ",(int)yaw1/10);//é€šè¿‡ä¸²å£1è¾“å‡ºyaw
 		//roll
-		roll1=(roll-roll0)*10;                            //¸³tempÎªroll		
-		printf("roll:%d,  ",(int)roll1/100);//Í¨¹ı´®¿Ú1Êä³öroll
+		roll1=(roll-roll0)*10;                            //èµ‹tempä¸ºroll		
+		printf("roll:%d,  ",(int)roll1/100);//é€šè¿‡ä¸²å£1è¾“å‡ºroll
 		USARTx = USART3;
-		printf("gyrox:%5d,  gyroy:%5d,  gyroz:%5d,  aacx:%5d,  aacy:%5d,  aacz:%5d\r",gyrox,gyroy,gyroz,aacx,aacy,aacz);//ÉÏ±¨½ÇËÙ¶ÈÊı¾İ£¬¼ÓËÙ¶ÈÊı¾İ
-		printf("¾àÀë%5fcm\r\n",Length);
-		printf("µç»ú1Âö¿í%d,µç»ú2Âö¿í%d\r\n",ChannelPulse1,ChannelPulse2);
+		printf("gyrox:%5d,  gyroy:%5d,  gyroz:%5d,  aacx:%5d,  aacy:%5d,  aacz:%5d\r",gyrox,gyroy,gyroz,aacx,aacy,aacz);//ä¸ŠæŠ¥è§’é€Ÿåº¦æ•°æ®ï¼ŒåŠ é€Ÿåº¦æ•°æ®
+		printf("è·ç¦»%5fcm\r\n",Length);
+		printf("ç”µæœº1è„‰å®½%d,ç”µæœº2è„‰å®½%d\r\n",ChannelPulse1,ChannelPulse2);
 		float spd1=(4.0*(float)ChannelPulse1/3999.0-1.55)*28788.0;
 		float spd2=(4.0*(float)ChannelPulse2/3999.0-1.05)*19200.0;
-		printf("µç»ú1ËÙ¶È%d,µç»ú2ËÙ¶È%d\r\n",(int)spd1,(int)spd2);
-		LED1=!LED1;			//LEDÉÁË¸
+		printf("ç”µæœº1é€Ÿåº¦%d,ç”µæœº2é€Ÿåº¦%d\r\n",(int)spd1,(int)spd2);
+		LED1=!LED1;			//LEDé—ªçƒ
 		delay_ms(50);
-		mpu6050.flag = 0;									//²É¼¯³É¹¦±êÖ¾Î»ÉèÖÃÎªÎŞĞ§
+		mpu6050.flag = 0;									//é‡‡é›†æˆåŠŸæ ‡å¿—ä½è®¾ç½®ä¸ºæ— æ•ˆ
 	}
-	else ;														//·À¿¨ËÀ
+	else ;														//é˜²å¡æ­»
 }
 
 /**
-  * @brief  PID¿ØÖÆÆ÷Éè¼Æ
-  * @param  ÎŞ
-  * @retval ÎŞ
+  * @brief  PIDæ§åˆ¶å™¨è®¾è®¡
+  * @param  æ— 
+  * @retval æ— 
   */
 void Controler(void)
 {
@@ -178,9 +178,9 @@ void bldcm2_pid_control(void)
 
 
 /**
-  * @brief  Í¨ĞÅĞ­Òé
-  * @param  ÎŞ
-  * @retval ÎŞ
+  * @brief  é€šä¿¡åè®®
+  * @param  æ— 
+  * @retval æ— 
   */
 void deal_serial_data(void)
 {
@@ -202,7 +202,7 @@ void deal_serial_data(void)
 			set_motor2_dutyfactor(ChannelPulse2);
 			printf("OK!");
 		}
-		else if(USART_RX_BUF[0] == 'c'||USART_RX_BUF[0] == 'C') //³õÊ¼»¯Ğ­Òé
+		else if(USART_RX_BUF[0] == 'c'||USART_RX_BUF[0] == 'C') //åˆå§‹åŒ–åè®®
 		{
 			ChannelPulse1 = 1.5/4.0*Motor1_TIM_Period;
 			ChannelPulse2 = 1.0/4.0*Motor2_TIM_Period;
@@ -210,7 +210,7 @@ void deal_serial_data(void)
 			set_motor2_dutyfactor(1.0/4.0*Motor2_TIM_Period);
 			printf("OK!");
 		}
-		else if(USART_RX_BUF[0] == 's'||USART_RX_BUF[0] == 'S') //Æô¶¯Ğ­Òé
+		else if(USART_RX_BUF[0] == 's'||USART_RX_BUF[0] == 'S') //å¯åŠ¨åè®®
 		{
 			ChannelPulse1 = 1.62/4.0*Motor1_TIM_Period;
 			ChannelPulse2 = 1.1/4.0*Motor1_TIM_Period;
@@ -218,22 +218,22 @@ void deal_serial_data(void)
 			set_motor2_dutyfactor(ChannelPulse2);
 			printf("OK!");
 		}
-		else if(USART_RX_BUF[0] == 'b'||USART_RX_BUF[0] == 'B') //Æô¶¯Ğ­Òé
+		else if(USART_RX_BUF[0] == 'b'||USART_RX_BUF[0] == 'B') //å¯åŠ¨åè®®
 		{
 			ChannelPulse1 -= 10;    
 			set_motor1_dutyfactor(ChannelPulse1);
 		}
-		else if(USART_RX_BUF[0] == 'd'||USART_RX_BUF[0] == 'D') //Æô¶¯Ğ­Òé
+		else if(USART_RX_BUF[0] == 'd'||USART_RX_BUF[0] == 'D') //å¯åŠ¨åè®®
 		{    
 			ChannelPulse2 -= 10; 
 			set_motor2_dutyfactor(ChannelPulse2);
 		}
-		else if(USART_RX_BUF[0] == 'q'||USART_RX_BUF[0] == 'B') //Æô¶¯Ğ­Òé
+		else if(USART_RX_BUF[0] == 'q'||USART_RX_BUF[0] == 'B') //å¯åŠ¨åè®®
 		{
 			ChannelPulse1 += 10;    
 			set_motor1_dutyfactor(ChannelPulse1);
 		}
-		else if(USART_RX_BUF[0] == 'p'||USART_RX_BUF[0] == 'D') //Æô¶¯Ğ­Òé
+		else if(USART_RX_BUF[0] == 'p'||USART_RX_BUF[0] == 'D') //å¯åŠ¨åè®®
 		{  
 			ChannelPulse2 += 10; 
 			set_motor2_dutyfactor(ChannelPulse2);
